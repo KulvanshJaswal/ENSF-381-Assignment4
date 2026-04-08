@@ -1,0 +1,26 @@
+[
+  {
+    "customerName": "Alice Johnson",
+    "flavorName": "Vanilla Dream",
+    "review": "The ice cream was delicious and very creamy!",
+    "rating": 5
+  },
+  {
+    "customerName": "John Johnson",
+    "flavorName": "Chocolate Dream",
+    "review": "The ice cream was delicious and very creamy!",
+    "rating": 5
+  },
+  {
+    "customerName": "Terry Larson",
+    "flavorName": "Mint Chip",
+    "review": "The ice cream was very minty and creamy!",
+    "rating": 5
+  },
+  {
+    "customerName": "Berry Line",
+    "flavorName": "Rocky Road",
+    "review": "The ice cream was delicious and nice and chunky!",
+    "rating": 5
+  }
+]

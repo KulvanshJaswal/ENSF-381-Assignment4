@@ -1,0 +1,153 @@
+"""
+ENSF 381 - Assignment 4
+Group Members:
+- Kulvansh Jaswal - [Your UCID]
+- [Partner Name] - [Partner UCID]
+"""
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import bcrypt
+import json
+from datetime import datetime
+
+app = Flask(__name__)
+CORS(app)
+
+users = [
+    {
+        "id": 1,
+        "username": "sweet_alice",
+        "email": "alice@example.com",
+        "password_hash": bcrypt.hashpw("IceCream!23".encode('utf-8'), bcrypt.gensalt()),
+        "cart": [],
+        "orders": []
+    }
+]
+
+def load_json_file(filename):
+    try:
+        with open(filename, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+def find_user_by_id(user_id):
+    for user in users:
+        if user['id'] == user_id:
+            return user
+    return None
+
+def find_user_by_username(username):
+    for user in users:
+        if user['username'].lower() == username.lower():
+            return user
+    return None
+
+def find_user_by_email(email):
+    for user in users:
+        if user['email'].lower() == email.lower():
+            return user
+    return None
+
+def find_flavor_by_id(flavor_id):
+    flavors = load_json_file('flavors.json')
+    for flavor in flavors:
+        if flavor['id'] == flavor_id:
+            return flavor
+    return None
+
+def validate_username(username):
+    if len(username) < 3 or len(username) > 20:
+        return False, "Username must be between 3 and 20 characters"
+    
+    if not username[0].isalpha():
+        return False, "Username must start with a letter"
+    
+    for char in username:
+        if not (char.isalnum() or char in ['_', '-']):
+            return False, "Username may only contain letters, numbers, underscores, and hyphens"
+    
+    return True, ""
+
+def validate_email(email):
+    if '@' not in email or '.' not in email.split('@')[-1]:
+        return False, "Invalid email format"
+    return True, ""
+
+def validate_password(password):
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password)
+    
+    if not (has_upper and has_lower and has_digit and has_special):
+        return False, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    
+    return True, ""
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json
+    username = data.get('username', '')
+    email = data.get('email', '')
+    password = data.get('password', '')
+    
+    valid, msg = validate_username(username)
+    if not valid:
+        return jsonify({"success": False, "message": msg}), 400
+    
+    valid, msg = validate_email(email)
+    if not valid:
+        return jsonify({"success": False, "message": msg}), 400
+    
+    valid, msg = validate_password(password)
+    if not valid:
+        return jsonify({"success": False, "message": msg}), 400
+    
+    if find_user_by_username(username):
+        return jsonify({"success": False, "message": "Username is already taken."}), 400
+    
+    if find_user_by_email(email):
+        return jsonify({"success": False, "message": "Email is already registered."}), 400
+    
+    password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    
+    new_user = {
+        "id": len(users) + 1,
+        "username": username,
+        "email": email,
+        "password_hash": password_hash,
+        "cart": [],
+        "orders": []
+    }
+    
+    users.append(new_user)
+    
+    return jsonify({"success": True, "message": "Registration successful."}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username', '')
+    password = data.get('password', '')
+    
+    user = find_user_by_username(username)
+    if not user:
+        return jsonify({"success": False, "message": "Invalid username or password."}), 401
+    
+    if not bcrypt.checkpw(password.encode('utf-8'), user['password_hash']):
+        return jsonify({"success": False, "message": "Invalid username or password."}), 401
+    
+    return jsonify({
+        "success": True,
+        "message": "Login successful.",
+        "userId": user['id'],
+        "username": user['username']
+    }), 200
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
