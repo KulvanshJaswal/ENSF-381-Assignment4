@@ -10,6 +10,7 @@ from flask_cors import CORS
 import bcrypt
 import json
 from datetime import datetime
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -148,6 +149,34 @@ def login():
         "userId": user['id'],
         "username": user['username']
     }), 200
+
+@app.route('/reviews', methods=['GET'])
+def get_reviews():
+    data = load_json_file("reviews.json")
+    
+    if len(data) >= 2:
+        reviews = random.sample(data, 2)
+        return jsonify({"success": True, "message": "Reviews loaded.", "reviews": reviews})
+    
+    return jsonify({"success": True, "message": "Reviews loaded.", "reviews": data})
+
+@app.route('/flavors', methods=['GET'])
+def get_flavors():
+    data = load_json_file("flavors.json")
+    
+    return jsonify({"success": True, "message": "Flavors loaded.", "flavors": data})
+
+@app.route('/cart', methods=['GET'])
+def get_cart():
+    user_id = request.args.get('userId')
+    user = find_user_by_id(int(user_id))
+
+    if user is None:
+        return jsonify({"success": False, "message": "User ID does not exist"})
+    
+    return jsonify({"success": True, "message": "Cart loaded.", "cart": user['cart']})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
