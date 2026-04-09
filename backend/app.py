@@ -176,7 +176,37 @@ def get_cart():
     
     return jsonify({"success": True, "message": "Cart loaded.", "cart": user['cart']})
 
-
+@app.route('/cart', methods=['POST'])
+def add_to_cart():
+    data = request.json
+    user_id = data.get('userId')
+    flavor_id = data.get('flavorId')
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+    
+    flavor = find_flavor_by_id(flavor_id)
+    if not flavor:
+        return jsonify({"success": False, "message": "Flavor not found."}), 404
+    
+    for item in user['cart']:
+        if item['flavorId'] == flavor_id:
+            return jsonify({"success": False, "message": "Flavor already in cart. Use PUT to update quantity."}), 400
+    
+    cart_item = {
+        "flavorId": flavor['id'],
+        "name": flavor['name'],
+        "price": flavor['price'],
+        "quantity": 1
+    }
+    user['cart'].append(cart_item)
+    
+    return jsonify({
+        "success": True,
+        "message": "Flavor added to cart.",
+        "cart": user['cart']
+    }), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
