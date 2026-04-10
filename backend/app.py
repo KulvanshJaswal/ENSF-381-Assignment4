@@ -208,5 +208,101 @@ def add_to_cart():
         "cart": user['cart']
     }), 200
 
+@app.route('/cart', methods=['PUT'])
+def update_cart():
+    data = request.json
+    user_id = data.get('userId')
+    flavor_id = data.get('flavorId')
+    quantity = data.get('quantity')
+    
+    if quantity < 1:
+        return jsonify({"success": False, "message": "Quantity must be at least 1."}), 400
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+    
+    cart_item = None
+    for item in user['cart']:
+        if item['flavorId'] == flavor_id:
+            cart_item = item
+            break
+    
+    if not cart_item:
+        return jsonify({"success": False, "message": "Flavor not in cart."}), 404
+    
+    cart_item['quantity'] = quantity
+    
+    return jsonify({
+        "success": True,
+        "message": "Cart updated successfully.",
+        "cart": user['cart']
+    }), 200
+
+@app.route('/cart', methods=['DELETE'])
+def delete_from_cart():
+    data = request.json
+    user_id = data.get('userId')
+    flavor_id = data.get('flavorId')
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+    
+    user['cart'] = [item for item in user['cart'] if item['flavorId'] != flavor_id]
+    
+    return jsonify({
+        "success": True,
+        "message": "Flavor removed from cart.",
+        "cart": user['cart']
+    }), 200
+
+@app.route('/orders', methods=['POST'])
+def place_order():
+    data = request.json
+    user_id = data.get('userId')
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+    
+    if len(user['cart']) == 0:
+        return jsonify({"success": False, "message": "Cart is empty."}), 400
+    
+    total = sum(item['price'] * item['quantity'] for item in user['cart'])
+    
+    order_id = len(user['orders']) + 1
+    order = {
+        "orderId": order_id,
+        "items": user['cart'].copy(),
+        "total": round(total, 2),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    
+    user['orders'].append(order)
+    user['cart'] = []
+    
+    return jsonify({
+        "success": True,
+        "message": "Order placed successfully.",
+        "orderId": order_id
+    }), 201
+
+@app.route('/orders', methods=['GET'])
+def get_orders():
+    user_id = request.args.get('userId', type=int)
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found."}), 404
+    
+    return jsonify({
+        "success": True,
+        "message": "Order history loaded.",
+        "orders": user['orders']
+    }), 200
+    
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
