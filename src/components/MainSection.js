@@ -1,21 +1,24 @@
 import React, {useState, useEffect} from "react";
-import flavors from "../data/flavors";
-import reviews from "../data/reviews";
 
 function MainSection(){
 
 const [randomFlavors,setRandomFlavors] = useState([]);
 const [randomReviews,setRandomReviews] = useState([]);
 
-useEffect(()=>{
+useEffect(() => {
+fetch("http://localhost:5000/flavors")
+.then(res => res.json())
+.then(data => {
+const shuffled = [...data.flavors].sort(() => 0.5 - Math.random());
+setRandomFlavors(shuffled.slice(0, 3));
+});
 
-const shuffledFlavors=[...flavors].sort(()=>0.5-Math.random());
-setRandomFlavors(shuffledFlavors.slice(0,3));
-
-const shuffledReviews=[...reviews].sort(()=>0.5-Math.random());
-setRandomReviews(shuffledReviews.slice(0,2));
-
-},[])
+fetch("http://localhost:5000/reviews")
+.then(res => res.json())
+.then(data => {
+setRandomReviews(data.reviews);
+});
+}, []);
 
 return(
 
