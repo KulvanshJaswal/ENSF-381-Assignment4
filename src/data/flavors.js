@@ -1,84 +1,67 @@
 const flavors = [
- {
- id: 1,
- name: "Vanilla Dream",
- price: "$4.99",
- description: " Classic creamy vanilla ice cream made with fresh ingredients.",
- duration: "8 weeks",
- image: "images/vanilla.jpg"
- },
- {
- id: 2,
- name: "Chocolate Dream",
- price: "$4.99",
- description: " Classic creamy chocolate ice cream made with fresh ingredients.",
- duration: "8 weeks",
- image: "images/chocolate.jpg"
- },
- {
- id: 3,
- name: "Mint Chip",
- price: "$4.99",
- description: " Classic creamy Mint ice cream made with fresh choclate chunks.",
- duration: "8 weeks",
- image: "images/mint.jpg"
- },
- {
- id: 4,
- name: "Strawberry Frenzy",
- price: "$4.99",
- description: " Classic creamy strawbery ice cream made with fresh strawberries.",
- duration: "8 weeks",
- image: "images/strawberry.jpg"
- },
- {
- id: 5,
- name: "Choco Surprise",
- price: "$4.99",
- description: " Classic creamy chocolate ice cream made with a surprise inside.",
- duration: "8 weeks",
- image: "images/chocolate.jpg"
- },
- {
- id: 6,
- name: "Rocky Road",
- price: "$4.99",
- description: " Classic creamy chocolate ice cream with nuts and marshmellows.",
- duration: "8 weeks",
- image: "images/chocolate.jpg"
- },
- {
- id: 7,
- name: "Chocolate Heaven",
- price: "$4.99",
- description: "Rich and indulgent chocolate ice cream for true chocoholics.",
- duration: "8 weeks",
- image: "images/chocolate.jpg"
- },
- {
- id: 8,
- name: "Strawberry Swirl",
- price: "$4.99",
- description: " Classic creamy strawberry ice cream with a swirrl of strawberry jam.",
- duration: "8 weeks",
- image: "images/strawberry.jpg"
- },
- {
- id: 9,
- name: "Caramel Crunch",
- price: "$4.99",
- description: " Classic creamy vanilla with buttery toffee crunch.",
- duration: "8 weeks",
- image: "images/vanilla.jpg"
- },
- {
- id: 10,
- name: "Mint Dream",
- price: "$4.99",
- description: " Classic creamy mint ice cream made with fresh ingredients.",
- duration: "8 weeks",
- image: "images/mint.jpg"
- },
+{
+id:1,
+name:"Vanilla Dream",
+price:4.99,
+description:"Classic creamy vanilla ice cream.",
+image:"../images/vanilla.jpg"
+},
+{
+id:2,
+name:"Chocolate Heaven",
+price:5.49,
+description:"Rich chocolate ice cream.",
+image:"../images/chocolate.jpg"
+},
+{
+id:3,
+name:"Strawberry Bliss",
+price:5.29,
+description:"Fresh strawberry flavor.",
+image:"../images/strawberry.jpg"
+},
+{
+id:4,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+},
+{
+id:5,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+},
+{
+id:6,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+},
+{
+id:7,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+},
+{
+id:8,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+},
+{
+id:9,
+name:"Mint Magic",
+price:4.99,
+description:"Mint ice cream with chocolate chips.",
+image:"../images/mint.jpg"
+}
 ];
 
-export default flavors
+export default flavors;

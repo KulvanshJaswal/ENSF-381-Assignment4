@@ -1,91 +1,80 @@
-import {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import DisplayStatus from './DisplayStatus';
+import React,{useState,useEffect,createContext} from "react";
+import AuthMessage from "./AuthMessage";
 
-function LoginForm() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
-    const navigate = useNavigate();
+export const AuthContext = createContext();
 
-    useEffect(() => {
-        if(messageType === "success"){
-            setTimeout(() => {
-                navigate('/flavors');
-            }, 2000);
-        }
-    }, [messageType]);
+function LoginForm(){
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+const [username,setUsername]=useState("")
+const [password,setPassword]=useState("")
+const [status,setStatus]=useState(null)
 
-        if(username.length == 0){
-            setMessage("Username cannot be empty");
-            setMessageType("error");
-            return;
-        }
+const handleLogin = (e) => {
+  e.preventDefault(); // ⚡ Stop form submission
+  if (username === "" || password === "") {
+    setStatus({ type: "error", message: "Fields cannot be empty" });
+    return;
+  }
+  if (password.length < 8) {
+    setStatus({ type: "error", message: "Password must be at least 8 characters" });
+    return;
+  }
 
-        if(password.length < 8){
-            setMessage("Password must be atleast 8 characters");
-            setMessageType("error");
-            return;
-        }
+  fetch("https://jsonplaceholder.typicode.com/users")
+    .then(res => res.json())
+    .then(data => {
+      const user = data.find(u => u.username === username);
 
-        try{
-            let response = await fetch(`https://jsonplaceholder.typicode.com/users`);
-            let data = await response.json();
-            
-            let foundUser = null;
+      // ⚠ jsonplaceholder doesn't have 'password', using email as password here
+      if (user && user.email === password) {
+        setStatus({ type: "success", message: "Login successful" });
+        setTimeout(() => window.location = "/flavors", 2000);
+      } else {
+        setStatus({ type: "error", message: "Invalid credentials" });
+      }
+    });
+};
 
-            for(let user of data){
-                if (user.username.toLowerCase() === username.toLowerCase()) {
-                        foundUser = user;
-                        break;
-                }
-            }
-            if (!foundUser) {
-                setMessage("Username not found");
-                setMessageType("error");
-            } else if (foundUser.email !== password) {
-                setMessage("Incorrect password");
-                setMessageType("error");
-            } else {
-                setMessage("Login successful! Redirecting...");
-                setMessageType("success");
-            }
-            
-        } catch (error){
-            console.log("Error:", error);
-        }
-    };
+return(
 
-    return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Username:</label>
-                <input 
-                    type="text" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <br/>
-                
-                <label>Password:</label>
-                <input 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <br/>
-                
-                <button type="submit">Login</button>
-            </form>
-            <p>Forgot Password?</p>
-            {message && <DisplayStatus type={messageType} message={message} />}
-        </div>
-    );
+<AuthContext.Provider value={{status}}>
+
+<div className="login-form">
+<form>
+<h2 className="login-title">Login</h2>
+
+<label >Username </label>
+<input
+className="login-input"
+placeholder="Username"
+onChange={(e)=>setUsername(e.target.value)}
+/>
+<br/><br/>
+<label>Password </label>
+<input
+className="login-input"
+type="password"
+placeholder="Password"
+onChange={(e)=>setPassword(e.target.value)}
+/>
+<br/>
+<button 
+className="login-button"
+onClick={handleLogin}
+>
+Login
+</button>
+
+<p className="forgot-password">Forgot Password?</p>
+
+<AuthMessage/>
+</form>
+</div>
+
+</AuthContext.Provider>
+
+)
+
 }
 
 export default LoginForm;
