@@ -1,80 +1,84 @@
-import React,{useState,useEffect,createContext} from "react";
-import AuthMessage from "./AuthMessage";
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import DisplayStatus from './DisplayStatus';
 
-export const AuthContext = createContext();
+function LoginForm() {
+const [username, setUsername] = useState("");
+const [password, setPassword] = useState("");
+const [message, setMessage] = useState("");
+const [messageType, setMessageType] = useState("");
+const navigate = useNavigate();
 
-function LoginForm(){
+useEffect(() => {
+if(messageType === "success"){
+setTimeout(() => {
+navigate('/flavors');
+}, 2000);
+}
+}, [messageType]);
 
-const [username,setUsername]=useState("")
-const [password,setPassword]=useState("")
-const [status,setStatus]=useState(null)
+const handleSubmit = async (e) => {
+e.preventDefault();
 
-const handleLogin = (e) => {
-  e.preventDefault(); // ⚡ Stop form submission
-  if (username === "" || password === "") {
-    setStatus({ type: "error", message: "Fields cannot be empty" });
-    return;
-  }
-  if (password.length < 8) {
-    setStatus({ type: "error", message: "Password must be at least 8 characters" });
-    return;
-  }
+if(username.length === 0){
+setMessage("Username cannot be empty");
+setMessageType("error");
+return;
+}
 
-  fetch("https://jsonplaceholder.typicode.com/users")
-    .then(res => res.json())
-    .then(data => {
-      const user = data.find(u => u.username === username);
+if(password.length < 8){
+setMessage("Password must be at least 8 characters");
+setMessageType("error");
+return;
+}
 
-      // ⚠ jsonplaceholder doesn't have 'password', using email as password here
-      if (user && user.email === password) {
-        setStatus({ type: "success", message: "Login successful" });
-        setTimeout(() => window.location = "/flavors", 2000);
-      } else {
-        setStatus({ type: "error", message: "Invalid credentials" });
-      }
-    });
+try {
+let response = await fetch("http://localhost:5000/login", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ username: username, password: password })
+});
+let data = await response.json();
+
+if (data.success) {
+localStorage.setItem("userId", data.userId);
+localStorage.setItem("username", data.username);
+setMessage("Login successful! Redirecting...");
+setMessageType("success");
+} else {
+setMessage(data.message);
+setMessageType("error");
+}
+} catch (error) {
+console.log("Error:", error);
+}
 };
 
-return(
-
-<AuthContext.Provider value={{status}}>
-
-<div className="login-form">
-<form>
-<h2 className="login-title">Login</h2>
-
-<label >Username </label>
+return (
+<div>
+<h2>Login</h2>
+<form onSubmit={handleSubmit}>
+<label>Username:</label>
 <input
-className="login-input"
-placeholder="Username"
-onChange={(e)=>setUsername(e.target.value)}
-/>
-<br/><br/>
-<label>Password </label>
-<input
-className="login-input"
-type="password"
-placeholder="Password"
-onChange={(e)=>setPassword(e.target.value)}
+type="text"
+value={username}
+onChange={(e) => setUs7ername(e.target.value)}
 />
 <br/>
-<button 
-className="login-button"
-onClick={handleLogin}
->
-Login
-</button>
-
-<p className="forgot-password">Forgot Password?</p>
-
-<AuthMessage/>
+<label>Password:</label>
+<input
+type="password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+/>
+<br/>
+<button type="submit">Login</button>
 </form>
+<p>Forgot Password?</p> 
+<p>Need an account? <Link to="/signup">Sign up</Link></p>
+{message && <DisplayStatus type={messageType} message={message} />}
 </div>
-
-</AuthContext.Provider>
-
-)
-
+);
 }
 
 export default LoginForm;
