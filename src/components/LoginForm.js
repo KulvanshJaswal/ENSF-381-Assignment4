@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import DisplayStatus from './DisplayStatus';
 
@@ -9,13 +9,6 @@ const [message, setMessage] = useState("");
 const [messageType, setMessageType] = useState("");
 const navigate = useNavigate();
 
-useEffect(() => {
-if(messageType === "success"){
-setTimeout(() => {
-navigate('/flavors');
-}, 2000);
-}
-}, [messageType]);
 
 const handleSubmit = async (e) => {
 e.preventDefault();
@@ -43,8 +36,11 @@ let data = await response.json();
 if (data.success) {
 localStorage.setItem("userId", data.userId);
 localStorage.setItem("username", data.username);
-setMessage("Login successful! Redirecting...");
+setMessage("Login successful");
 setMessageType("success");
+setTimeout(() => {
+        navigate('/flavors');
+    }, 2000);
 } else {
 setMessage(data.message);
 setMessageType("error");
@@ -56,13 +52,13 @@ console.log("Error:", error);
 
 return (
 <div>
-<h2>Login</h2>
 <form onSubmit={handleSubmit}>
+<h2>Login</h2>
 <label>Username:</label>
 <input
 type="text"
 value={username}
-onChange={(e) => setUs7ername(e.target.value)}
+onChange={(e) => setUsername(e.target.value)}
 />
 <br/>
 <label>Password:</label>
@@ -73,10 +69,12 @@ onChange={(e) => setPassword(e.target.value)}
 />
 <br/>
 <button type="submit">Login</button>
-</form>
-<p>Forgot Password?</p> 
+<br></br>
+
+<a href="#">Forgot Password?</a>
 <p>Need an account? <Link to="/signup">Sign up</Link></p>
 {message && <DisplayStatus type={messageType} message={message} />}
+</form>
 </div>
 );
 }

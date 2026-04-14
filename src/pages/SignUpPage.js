@@ -15,7 +15,6 @@ function SignupPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Frontend validation
         if (username.length < 3 || username.length > 20) {
             setMessage("Username must be between 3 and 20 characters");
             setMessageType("error");
@@ -107,6 +106,7 @@ function SignupPage() {
                     <h2 className="login-title">Signup</h2>
 
                     <label>Username</label>
+                    <br></br>
                     <input
                         className="login-input"
                         type="text"
@@ -116,6 +116,7 @@ function SignupPage() {
                     <br/>
 
                     <label>Email</label>
+                    <br></br>
                     <input
                         className="login-input"
                         type="text"
@@ -125,6 +126,7 @@ function SignupPage() {
                     <br/>
 
                     <label>Password</label>
+                    <br></br>
                     <input
                         className="login-input"
                         type="password"
@@ -134,6 +136,7 @@ function SignupPage() {
                     <br/>
 
                     <label>Confirm Password</label>
+                    <br></br>
                     <input
                         className="login-input"
                         type="password"
@@ -143,7 +146,7 @@ function SignupPage() {
                     <br/>
 
                     <button className="login-button" type="submit">Signup</button>
-
+                    <br></br>
                     <p>Already have an account? <Link to="/login">Login</Link></p>
 
                     {message && <p style={{ color: messageType === "error" ? "red" : "green" }}>{message}</p>}
