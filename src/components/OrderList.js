@@ -1,7 +1,7 @@
   import React from "react";
   import OrderItem from "./OrderItem";
 
-  function OrderList({ cart, removeItem, placeOrder }) {
+  function OrderList({ cart = [], removeItem, placeOrder }) {
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (

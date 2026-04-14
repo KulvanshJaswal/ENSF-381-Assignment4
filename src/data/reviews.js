@@ -10,7 +10,7 @@ customerName:"David Lee",
 flavorName:"Chocolate Heaven",
 review:"Best chocolate ice cream I ever had.",
 rating:4
-},
+},s
 {
 customerName:"Maria Lopez",
 flavorName:"Strawberry Bliss",

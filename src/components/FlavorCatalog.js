@@ -1,12 +1,10 @@
 import React from "react";
-import flavors from "../data/flavors";
 import FlavorItem from "./FlavorItem";
 
-function FlavorCatalog({addToOrder}){
+function FlavorCatalog({flavors=[], addToOrder}){
 
 return(
 <>
-
 <h2>Ice Cream Flavors</h2>
     <div className="flavor-grid">
 

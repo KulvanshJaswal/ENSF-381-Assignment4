@@ -39,7 +39,7 @@ localStorage.setItem("username", data.username);
 setMessage("Login successful");
 setMessageType("success");
 setTimeout(() => {
-        navigate('/flavors');
+        window.location.href = '/flavors';
     }, 2000);
 } else {
 setMessage(data.message);
