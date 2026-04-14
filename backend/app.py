@@ -1,8 +1,8 @@
 """
 ENSF 381 - Assignment 4
 Group Members:
-- Kulvansh Jaswal - [Your UCID]
-- [Partner Name] - [Partner UCID]
+- Kulvansh Jaswal - [30212576]
+- [Kuljot Jaswal] - [30211612]
 """
 
 from flask import Flask, request, jsonify
